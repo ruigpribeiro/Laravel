@@ -30,25 +30,20 @@ class BandController extends Controller
  */
 public function store(Request $request)
 {
-    // Validar o pedido
     $validated = $request->validate([
         'name' => 'required|string|max:255',
         'photo' => 'nullable|image',
     ]);
 
-    // Inicializa a variável da foto
     $photoPath = null;
 
-    // Verifica se há upload da foto
     if ($request->hasFile('photo')) {
         $photoPath = $request->file('photo')->store('photos', 'public');
         $validated['photo'] = str_replace('public/', '', $photoPath);
     }
 
-    // Cria a banda na base de dados, incluindo o caminho da imagem
     Band::create($validated);
 
-    // Redireciona para o index das bandas com uma mensagem de sucesso
     return redirect()->route('bands.index')->with('success', 'Banda criada com sucesso');
 }
 
@@ -58,7 +53,6 @@ public function store(Request $request)
      */
     public function show($id)
     {
-        // Encontra a banda com o devido id e retorna a view
         $band = Band::with('albums')->findOrFail($id);
         return view('bands.show', compact('band'));
     }
@@ -68,7 +62,6 @@ public function store(Request $request)
      */
     public function edit($id)
     {
-        // Encontra a banda com o devido id e retorna a view
         $band = Band::findOrFail($id);
         return view('bands.edit', compact('band'));
     }
@@ -78,24 +71,19 @@ public function store(Request $request)
      */
     public function update(Request $request, $id)
     {
-        // Valida o pedido
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'photo' => 'nullable|image',
         ]);
 
-        // Encontra a banda
         $band = Band::findOrFail($id);
 
-        // Se der upload da foto, insere na base de dados
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('public/photos');
         }
 
-        // Atualiza a banda com as devidas alterações
         $band->update($validated);
 
-        // Redireciona para as bandas com uma mensagem
         return redirect()->route('bands.index')->with('success', 'Banda atualizada com sucesso!');
     }
 
@@ -104,11 +92,9 @@ public function store(Request $request)
      */
     public function destroy($id)
     {
-        // Encontra a banda com o devido id e apaga-a
         $band = Band::findOrFail($id);
         $band->delete();
 
-        // Redireciona para o index das bandas com uma mensagem
         return redirect()->route('bands.index')->with('success', 'Banda apagada com sucesso!');
     }
 

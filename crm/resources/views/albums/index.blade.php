@@ -5,7 +5,9 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Álbuns de {{ $band->name }}</h1>
+        @auth
         <a href="{{ route('albums.create', $band->id) }}" class="btn btn-primary">Adicionar Álbum</a>
+        @endauth
     </div>
 
     <div class="row">
@@ -17,12 +19,14 @@
                         <h5 class="card-title">{{ $album->name }}</h5>
                         <p class="card-text">Data de Lançamento: {{ $album->release_date }}</p>
                         <a href="{{ route('albums.show', [$band->id, $album->id]) }}" class="btn btn-info">Ver Detalhes</a>
+                        @auth
                         <a href="{{ route('albums.edit', [$band->id, $album->id]) }}" class="btn btn-warning">Editar</a>
                         <form action="{{ route('albums.destroy', [$band->id, $album->id]) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Apagar</button>
                         </form>
+                        @endauth
                     </div>
                 </div>
             </div>
